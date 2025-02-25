@@ -1,0 +1,76 @@
+import java.io.*;
+import java.util.Scanner;
+
+public class EmployeeManagement {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        String fileName = "employees.txt";
+
+        while (true) {
+            System.out.println("\n=== Employee Management System ===");
+            System.out.println("1. Add an Employee");
+            System.out.println("2. Display All");
+            System.out.println("3. Exit");
+            System.out.print("Enter your choice: ");
+            
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (choice) {
+                case 1:
+                    addEmployee(scanner, fileName);
+                    break;
+                case 2:
+                    displayEmployees(fileName);
+                    break;
+                case 3:
+                    System.out.println("Exiting... Goodbye!");
+                    scanner.close();
+                    System.exit(0);
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+
+    public static void addEmployee(Scanner scanner, String fileName) {
+        try (FileWriter fw = new FileWriter(fileName, true);
+             BufferedWriter bw = new BufferedWriter(fw);
+             PrintWriter out = new PrintWriter(bw)) {
+
+            System.out.print("Enter Employee ID: ");
+            String id = scanner.nextLine();
+            
+            System.out.print("Enter Employee Name: ");
+            String name = scanner.nextLine();
+            
+            System.out.print("Enter Designation: ");
+            String designation = scanner.nextLine();
+            
+            System.out.print("Enter Salary: ");
+            String salary = scanner.nextLine();
+
+            out.println(id + "," + name + "," + designation + "," + salary);
+            System.out.println("Employee added successfully!");
+
+        } catch (IOException e) {
+            System.out.println("Error writing to file: " + e.getMessage());
+        }
+    }
+
+    public static void displayEmployees(String fileName) {
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            System.out.println("\n--- Employee List ---");
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split(",");
+                System.out.println("ID: " + data[0] + ", Name: " + data[1] + 
+                                   ", Designation: " + data[2] + ", Salary: " + data[3]);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("No employees found. Add employees first.");
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + e.getMessage());
+        }
+    }
+}
